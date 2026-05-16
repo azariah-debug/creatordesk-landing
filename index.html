@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CreatorDesk — AI Brand-Deal Manager for UGC Creators</title>
+  <meta name="description" content="Paste a brand DM or email. CreatorDesk turns it into a deal checklist, missing-term warnings, rate guidance, a reply draft, follow-up reminders, and an invoice path.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --primary: #8B5CF6;
+      --secondary: #06B6D4;
+      --bg: #0A0A0F;
+      --surface: #14141F;
+      --text: #F9FAFB;
+      --muted: #9CA3AF;
+      --border: #1F1F2E;
+      --warning: #F59E0B;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Container */
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Navigation */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10, 10, 15, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #7C3AED;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-cyan {
+      background: var(--secondary);
+      color: var(--bg);
+    }
+
+    .btn-cyan:hover {
+      background: #0891B2;
+      transform: translateY(-1px);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 80px 0 60px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 6px 14px;
+      background: rgba(139, 92, 246, 0.15);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--primary);
+      margin-bottom: 24px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, var(--text) 0%, var(--muted) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto 32px;
+      line-height: 1.7;
+    }
+
+    .hero-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 480px;
+      margin: 0 auto 24px;
+    }
+
+    .hero-form input[type="email"] {
+      width: 100%;
+      padding: 14px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    .hero-form input[type="email"]:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .hero-form input[type="email"]::placeholder {
+      color: var(--muted);
+    }
+
+    .hero-form button {
+      width: 100%;
+      padding: 14px 24px;
+      font-size: 1rem;
+    }
+
+    .trust-line {
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+
+    /* Problem Section */
+    .problem {
+      padding: 60px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .problem h2 {
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 700;
+      margin-bottom: 20px;
+      line-height: 1.3;
+    }
+
+    .problem-intro {
+      color: var(--muted);
+      font-size: 1rem;
+      margin-bottom: 32px;
+      max-width: 700px;
+    }
+
+    .warning-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .warning-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 18px;
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+    }
+
+    .warning-item svg {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      color: var(--warning);
+      margin-top: 1px;
+    }
+
+    /* How It Works */
+    .how-it-works {
+      padding: 80px 0;
+    }
+
+    .section-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 800;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 600px;
+      margin-bottom: 48px;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .step-card {
+      position: relative;
+      padding: 28px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .step-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .step-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 50%;
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 16px;
+    }
+
+    .step-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .step-card p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Features */
+    .features {
+      padding: 80px 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    .feature-card {
+      padding: 28px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .feature-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      background: rgba(139, 92, 246, 0.15);
+      border-radius: var(--radius-sm);
+      margin-bottom: 20px;
+    }
+
+    .feature-icon svg {
+      width: 24px;
+      height: 24px;
+      color: var(--primary);
+    }
+
+    .feature-card h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Beta Qualification */
+    .qualification {
+      padding: 80px 0;
+    }
+
+    .qualification-box {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.1));
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      border-radius: var(--radius);
+      padding: 40px 28px;
+      text-align: center;
+    }
+
+    .qualification-box h2 {
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .qualification-box > p {
+      color: var(--muted);
+      margin-bottom: 32px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .check-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      max-width: 420px;
+      margin: 0 auto 32px;
+      text-align: left;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 0.95rem;
+    }
+
+    .check-item svg {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      color: var(--secondary);
+      margin-top: 2px;
+    }
+
+    /* Founder Note */
+    .founder-note {
+      padding: 60px 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+    }
+
+    .founder-card {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 32px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      position: relative;
+    }
+
+    .founder-card::before {
+      content: '"';
+      position: absolute;
+      top: -10px;
+      left: 24px;
+      font-size: 4rem;
+      color: var(--primary);
+      opacity: 0.3;
+      line-height: 1;
+    }
+
+    .founder-card p {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: var(--text);
+      font-style: italic;
+    }
+
+    .founder-signature {
+      margin-top: 20px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-style: normal;
+    }
+
+    /* Final CTA */
+    .final-cta {
+      padding: 100px 0;
+      text-align: center;
+      background: linear-gradient(180deg, var(--bg) 0%, rgba(139, 92, 246, 0.05) 100%);
+    }
+
+    .final-cta h2 {
+      font-size: clamp(1.75rem, 4.5vw, 2.5rem);
+      font-weight: 800;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .final-cta > .container > p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 550px;
+      margin: 0 auto 32px;
+    }
+
+    .final-cta .btn {
+      padding: 16px 32px;
+      font-size: 1rem;
+    }
+
+    /* Footer */
+    .footer {
+      padding: 40px 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-size: 1.1rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+
+    .footer p {
+      color: var(--muted);
+      font-size: 0.875rem;
+    }
+
+    /* Form States */
+    .form-success {
+      padding: 16px;
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: var(--radius-sm);
+      color: #22C55E;
+      font-size: 0.95rem;
+      display: none;
+    }
+
+    .form-error {
+      padding: 16px;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: var(--radius-sm);
+      color: #EF4444;
+      font-size: 0.95rem;
+      display: none;
+      margin-top: 12px;
+    }
+
+    /* Responsive */
+    @media (min-width: 640px) {
+      .hero-form {
+        flex-direction: row;
+      }
+
+      .hero-form input[type="email"] {
+        flex: 1;
+      }
+
+      .hero-form button {
+        width: auto;
+      }
+
+      .steps {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .steps {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .features-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="#" class="logo">CreatorDesk</a>
+      <a href="#join" class="btn btn-primary">Join Beta</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <span class="eyebrow">For UGC creators and micro-influencers</span>
+      <h1>Your AI brand-deal manager <span>before you can afford a real manager.</span></h1>
+      <p class="hero-sub">Paste a brand DM or email. CreatorDesk turns it into a deal checklist, missing-term warnings, rate guidance, a reply draft, follow-up reminders, and an invoice path.</p>
+
+      <form class="hero-form" id="beta-form" action="https://formspree.io/forms/xwpjegpn/new" method="POST">
+        <input type="email" name="email" placeholder="your@email.com" required>
+        <button type="submit" class="btn btn-primary">Join the creator beta</button>
+      </form>
+      <div class="form-success" id="form-success">Thanks! You're on the list. We'll be in touch soon.</div>
+      <div class="form-error" id="form-error">Something went wrong. Try emailing us at <a href="mailto:hello@zerosonesstudio.com" style="text-decoration: underline;">hello@zerosonesstudio.com</a></div>
+
+      <p class="trust-line">Built for UGC creators and micro-influencers who have already done paid brand deals.</p>
+    </div>
+  </section>
+
+  <!-- Problem Section -->
+  <section class="problem">
+    <div class="container">
+      <h2>Your brand deals should not live in five different places.</h2>
+      <p class="problem-intro">Creators are tracking paid work across DMs, Gmail, notes, screenshots, spreadsheets, and memory. That is how follow-ups disappear, usage rights get missed, invoices go unpaid, and rates stay too low.</p>
+
+      <ul class="warning-list">
+        <li class="warning-item">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+          No payment due date
+        </li>
+        <li class="warning-item">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+          No usage-rights limit
+        </li>
+        <li class="warning-item">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+          No revision limit
+        </li>
+        <li class="warning-item">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+          Unclear whitelisting or paid usage terms
+        </li>
+        <li class="warning-item">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+          Unclear raw footage ownership
+        </li>
+        <li class="warning-item">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+          Vague deliverables
+        </li>
+        <li class="warning-item">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+          No approval or posting deadline
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works">
+    <div class="container">
+      <span class="section-label">How it works</span>
+      <h2 class="section-title">From scattered messages to organized deals</h2>
+      <p class="section-sub">Five steps from chaos to clarity — without hiring a manager or signing up for another spreadsheet.</p>
+
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h3>Paste the DM or email</h3>
+          <p>Drop in any brand message — Instagram DM screenshot text, email, or LinkedIn outreach. No formatting needed.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h3>Get your deal checklist</h3>
+          <p>CreatorDesk extracts the key terms and builds a structured deal overview. See exactly what was agreed upon at a glance.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h3>Review missing terms</h3>
+          <p>The system flags what's missing — payment timeline, usage rights, revision limits — so you can ask before you're already working.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">4</div>
+          <h3>Get rate guidance and a reply draft</h3>
+          <p>See where your rate stacks up and get a professional reply template you can customize to ask for the terms you need.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">5</div>
+          <h3>Track follow-ups and invoices</h3>
+          <p>Set reminders for check-ins and get an invoice path so nothing falls through the cracks — especially the money owed.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features">
+    <div class="container">
+      <span class="section-label">Features</span>
+      <h2 class="section-title">Everything a scattered deal inbox loses</h2>
+      <p class="section-sub">CreatorDesk keeps your brand relationships professional so you can focus on creating.</p>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+          </div>
+          <h3>Deal Extraction</h3>
+          <p>Paste any brand message and watch it transform into a structured deal summary you can actually reference.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+          </div>
+          <h3>Missing-Term Warnings</h3>
+          <p>Always know what's missing from your deal before you start work — not after. Protect yourself from scope creep and unpaid invoices.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          </div>
+          <h3>Rate Guidance</h3>
+          <p>Understand where your rate sits for the scope being requested. Know when you're being lowballed and what to charge instead.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+          </div>
+          <h3>Follow-Up Reminders</h3>
+          <p>Never let a brand conversation go cold or forget to chase an invoice. Stay professional, stay organized, get paid.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Beta Qualification -->
+  <section class="qualification" id="join">
+    <div class="container">
+      <div class="qualification-box">
+        <h2>Is this beta for you?</h2>
+        <p>We're being intentional about who we bring in first. CreatorDesk needs real workflows, not demo data.</p>
+
+        <ul class="check-list">
+          <li class="check-item">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+            Have completed at least 2 paid brand deals
+          </li>
+          <li class="check-item">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+            Have an active or recent brand conversation
+          </li>
+          <li class="check-item">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+            Track deals in DMs, notes, screenshots, spreadsheets, or email
+          </li>
+          <li class="check-item">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+            Want to charge more confidently
+          </li>
+          <li class="check-item">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+            Need help with follow-ups, usage terms, deliverables, or invoices
+          </li>
+        </ul>
+
+        <a href="#" class="btn btn-cyan" id="scroll-to-form">Get the missing-terms checklist</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Founder Note -->
+  <section class="founder-note">
+    <div class="container">
+      <div class="founder-card">
+        <p>We are starting with a small beta because the product needs real creator workflows, not fake demo data. If you have a messy brand DM, an unpaid invoice, or a deal you are not sure how to price, you are exactly who we want to learn from.</p>
+        <p class="founder-signature">— The CreatorDesk team</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="final-cta">
+    <div class="container">
+      <h2>Stop running your creator business from scattered messages.</h2>
+      <p>Join the beta and help shape CreatorDesk.</p>
+      <a href="#join" class="btn btn-primary">Join the creator beta</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-logo">CreatorDesk</div>
+      <p>&copy; 2026 CreatorDesk. Built for creators, by creators.</p>
+    </div>
+  </footer>
+
+  <script>
+    (function() {
+      const form = document.getElementById('beta-form');
+      const successMsg = document.getElementById('form-success');
+      const errorMsg = document.getElementById('form-error');
+      const scrollBtns = document.querySelectorAll('#scroll-to-form, .final-cta .btn, .nav .btn');
+
+      // Smooth scroll to form
+      scrollBtns.forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          setTimeout(function() {
+            form.querySelector('input').focus();
+          }, 500);
+        });
+      });
+
+      // Form submission
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        var formData = new FormData(form);
+        var submitBtn = form.querySelector('button[type="submit"]');
+        var originalText = submitBtn.textContent;
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+
+        fetch(form.action, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Accept': 'application/json'
+          }
+        })
+        .then(function(response) {
+          if (response.ok) {
+            successMsg.style.display = 'block';
+            errorMsg.style.display = 'none';
+            form.style.display = 'none';
+          } else {
+            throw new Error('Network response was not ok');
+          }
+        })
+        .catch(function(error) {
+          errorMsg.style.display = 'block';
+          successMsg.style.display = 'none';
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        });
+      });
+    })();
+  </script>
+
+</body>
+</html>
